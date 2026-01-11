@@ -5,7 +5,7 @@ class Table
 
     public class Create
     {
-        public static void New(SqliteConnection connection)
+        public static void NewTable(SqliteConnection connection)
         {
             using(SqliteCommand createHabitsTable = connection.CreateCommand())
             {
@@ -82,6 +82,12 @@ class Table
 
                 using (SqliteDataReader reader = selectCommand.ExecuteReader())
                 {
+                    Method.Print.GreenText("HABITS");
+
+                    Method.Formatting.HorizontalLine(67);
+                    Console.WriteLine("| {0,5} | {1,-20} | {2,-20} | {3,9} |", "ENTRY", "NAME", "DATE", "OCCURANCE");
+                    Method.Formatting.HorizontalLine(67);
+
                     int entryNo = 0;
                     while (reader.Read())
                     {
@@ -90,7 +96,8 @@ class Table
                         string date = reader.GetString(1);
                         int occurance = reader.GetInt32(2);
 
-                        Console.WriteLine("| {0, 3} | {1,-20} | {2,-20} | {3,4} |", entryNo, name, date, occurance);
+                        Console.WriteLine("| {0, 5} | {1,-20} | {2,-20} | {3,9} |", entryNo, name, date, occurance);
+                        Method.Formatting.HorizontalLine(67);
                     }
                 }
             }
