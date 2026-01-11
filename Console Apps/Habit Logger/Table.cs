@@ -17,7 +17,17 @@ class Table
                 Quantity INT DEFAULT 0,
                 PRIMARY KEY (Name, Date)
                 );";
-                createHabitsTable.ExecuteNonQuery();
+                
+                int created = createHabitsTable.ExecuteNonQuery();
+                if(created == 0)
+                {
+                    Method.Print.RedText("Table already exists");
+                    CommandLineInterface.WaitForKeyPress();
+                }
+                else
+                {
+                    CommandLineInterface.OperationCompletedMessage();
+                }
             }
         }
     }
@@ -28,12 +38,18 @@ class Table
         {
             using (SqliteCommand InsertHabitCmd = connection.CreateCommand())
             {
-                InsertHabitCmd.CommandText = "INSERT INTO Habit (Name, Date, Unit, Quantity) VALUES ($name, $date, $unit, $quantity)";
+                InsertHabitCmd.CommandText = "INSERT OR IGNORE INTO Habit (Name, Date, Unit, Quantity) VALUES ($name, $date, $unit, $quantity)";
                 InsertHabitCmd.Parameters.AddWithValue("$name", name);
                 InsertHabitCmd.Parameters.AddWithValue("$date", date);
                 InsertHabitCmd.Parameters.AddWithValue("$unit", unit);
                 InsertHabitCmd.Parameters.AddWithValue("$quantity", quantity);
-                InsertHabitCmd.ExecuteNonQuery();
+                
+                int inserted = InsertHabitCmd.ExecuteNonQuery();
+                if(inserted == 0)
+                {
+                    CommandLineInterface.NoRowsAffectedErrorMessage("Record already exists");
+                    CommandLineInterface.WaitForKeyPress();
+                }
             }
         }
         
@@ -41,11 +57,17 @@ class Table
         {
             using(SqliteCommand InsertHabitCmd = connection.CreateCommand())
             {
-                InsertHabitCmd.CommandText = "INSERT INTO Habit (Name, Date, Unit) VALUES ($name, $date, $unit)";
+                InsertHabitCmd.CommandText = "INSERT OR IGNORE INTO Habit (Name, Date, Unit) VALUES ($name, $date, $unit)";
                 InsertHabitCmd.Parameters.AddWithValue("$name", name);
                 InsertHabitCmd.Parameters.AddWithValue("$date", date);
                 InsertHabitCmd.Parameters.AddWithValue("$unit", unit);
-                InsertHabitCmd.ExecuteNonQuery();
+                
+                int inserted = InsertHabitCmd.ExecuteNonQuery();
+                if(inserted == 0)
+                {
+                    CommandLineInterface.NoRowsAffectedErrorMessage("Record already exists");
+                    CommandLineInterface.WaitForKeyPress();
+                }
             }
         }
     }
@@ -68,8 +90,11 @@ class Table
 
                 if(updated == 0)
                 {
-                    Method.Print.RedText("No row updated - offset out of range");
+                    CommandLineInterface.NoRowsAffectedErrorMessage("Record does not exist");
+                    CommandLineInterface.WaitForKeyPress();
                 }
+                else
+                    CommandLineInterface.OperationCompletedMessage();
             }
         }
 
@@ -89,8 +114,11 @@ class Table
 
                 if (updated == 0)
                 {
-                    Method.Print.RedText("No row updated - offset out of range");
+                    CommandLineInterface.NoRowsAffectedErrorMessage("Record does not exist");
+                    CommandLineInterface.WaitForKeyPress();
                 }
+                else
+                    CommandLineInterface.OperationCompletedMessage();
             }
         }
     }
@@ -106,6 +134,7 @@ class Table
 
                 using (SqliteDataReader reader = selectCommand.ExecuteReader())
                 {
+                    Console.WriteLine();
                     Console.WriteLine("HABIT TABLE");
 
                     Method.Formatting.HorizontalLine(89);
@@ -136,6 +165,7 @@ class Table
                 tableInfoCmd.CommandText = "PRAGMA table_info(Habit);";
                 using (SqliteDataReader reader = tableInfoCmd.ExecuteReader())
                 {
+                    Console.WriteLine("DATABASE SCHEMA");
                     while (reader.Read())
                     {
                         Console.WriteLine($"{reader["name"]} - {reader["type"]}");
@@ -152,8 +182,18 @@ class Table
         {
             using(SqliteCommand deleteTableCmd = connection.CreateCommand())
             {
-                deleteTableCmd.CommandText = "DROP TABLE Habit";
-                deleteTableCmd.ExecuteNonQuery();
+                deleteTableCmd.CommandText = "DROP TABLE IF EXISTS Habit";
+                
+                int deleteTable = deleteTableCmd.ExecuteNonQuery();
+                if(deleteTable == 0)
+                {
+                    CommandLineInterface.NoRowsAffectedErrorMessage("Table does not exist");
+                }
+                else
+                {
+                    CommandLineInterface.OperationCompletedMessage();
+                }
+                
             }
         }
 
@@ -168,8 +208,18 @@ class Table
                     LIMIT 1 OFFSET $rowMinusOne
                 );";
                 deleteRowCmd.Parameters.AddWithValue("$rowMinusOne", row - 1);
-                deleteRowCmd.ExecuteNonQuery();
-            }    
+                
+                int deleted = deleteRowCmd.ExecuteNonQuery();
+                if (deleted == 0)
+                {
+                    CommandLineInterface.NoRowsAffectedErrorMessage("Record does not exist");
+                    CommandLineInterface.WaitForKeyPress();
+                }
+                else
+                {
+                    CommandLineInterface.OperationCompletedMessage();
+                }
+            }
         }
     }
 }

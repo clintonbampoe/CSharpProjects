@@ -169,4 +169,18 @@ class CommandLineInterface
         Console.WriteLine("Press any key to continue...");
         Console.ReadKey(true);
     }
+
+    public static void WaitForKeyPress()
+    {
+        Console.WriteLine("Press any key to continue...");
+        Console.ReadKey(true);
+    }
+
+    public static void NoRowsAffectedErrorMessage(string errorDetail)
+    {
+        Console.WriteLine();
+        Method.Formatting.HorizontalLine(20);
+        Method.Print.RedText("ERROR");
+        Method.Print.RedText($"0 rows affected! - {errorDetail}");
+    }
 }
