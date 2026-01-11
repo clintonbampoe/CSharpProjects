@@ -34,7 +34,7 @@ class Table
                 InsertHabitCmd.ExecuteNonQuery();
             }
         }
-
+        
         public static void NameAndDateOnly(SqliteConnection connection, string name, string date)
         {
             using(SqliteCommand InsertHabitCmd = connection.CreateCommand())
@@ -61,10 +61,17 @@ class Table
                 );";
                 updateRowCmd.Parameters.AddWithValue("$updateOccurance", occurance);
                 updateRowCmd.Parameters.AddWithValue("$rowMinusOne", row-1);
-                updateRowCmd.ExecuteNonQuery();
+                int updated = updateRowCmd.ExecuteNonQuery();
+
+                if(updated == 0)
+                {
+                    Method.Print.RedText("No row updated - offset out of range");
+                }
             }
         }
     }
+
+
     public class Display
     {
         public static void All(SqliteConnection connection)
@@ -90,6 +97,7 @@ class Table
            
         }
     }
+
 
     public class Delete
     {
