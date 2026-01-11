@@ -29,6 +29,7 @@ class Program
 
             Console.WriteLine();
             Console.WriteLine("--- Table Management ---");
+            Console.WriteLine("\t h - Table Info");
             Console.WriteLine("\t t - New Table");
             Console.WriteLine("\t x - Delete Table");
 
@@ -55,6 +56,7 @@ class Program
                     case "a":
                     case "t":
                     case "x":
+                    case "h":
                         ValidInput = true;
                         break;
 
@@ -69,28 +71,53 @@ class Program
             using (connection)
             {
                 connection.Open();
-                Table.Create.NewTable(connection);
 
                 //
                 if (input.ToLower() == "i")
                 { 
                     CommandLineInterface.SelectFieldsForEntry(connection);
-                    CommandLineInterface.OperationCompletedMessage();
                 }
 
                 else if(input.ToLower() == "u")
                 {
+                    Console.Clear();
                     int row = CommandLineInterface.EnterRowTo("Update");
 
-                    Console.WriteLine("Occurances: ");
-                    Console.WriteLine("Enter quantity");
+                    Console.WriteLine("CHOOSE FIELD TO UPDATE");
+                    Console.WriteLine("\t u - Unit");
+                    Console.WriteLine("\t q - Quantity");
                     Console.Write(">>>");
+                    string updateFieldInput = Method.Input.Take();
 
-                    string userInput = Method.Input.Take();
-                    int quantity = CommandLineInterface.ConvertStringToInt(userInput);
+                    if (updateFieldInput.ToLower().Equals("u"))
+                    {
+                        Console.WriteLine("UNIT ");
+                        Console.WriteLine("Enter new unit");
+                        Console.Write(">>>");
 
-                    Table.Update.Row(connection, row, quantity);
-                    CommandLineInterface.OperationCompletedMessage();
+                        string userInput = Method.Input.Take();
+
+                        Table.UpdateRow.Unit(connection, row, userInput);
+                        CommandLineInterface.OperationCompletedMessage();
+                    }
+                    else if (updateFieldInput.ToLower().Equals("q"))
+                    {
+                        Console.WriteLine("QUANTITY ");
+                        Console.WriteLine("Enter new quantity");
+                        Console.Write(">>>");
+
+                        string userInput = Method.Input.Take();
+                        int quantity = CommandLineInterface.ConvertStringToInt(userInput);
+
+                        Table.UpdateRow.Quantity(connection, row, quantity);
+                        CommandLineInterface.OperationCompletedMessage();
+                    }
+                    else
+                    {
+                        Method.Print.RedText("Invalid Input");
+                        break;
+                    }
+
                 }
 
                 else if(input.ToLower() == "d")
@@ -108,7 +135,7 @@ class Program
 
                 else if (input.ToLower() == "a")
                 {
-                    Table.Display.All(connection);
+                    Table.Display.AllRows(connection);
 
                     Console.WriteLine("Press key close to close...");
                     Console.ReadKey(true);
@@ -130,6 +157,11 @@ class Program
                     }
                     else
                         break;
+                }
+                else if((input.ToLower() == "h"))
+                {
+                    Table.Display.TableInfo(connection);
+                    CommandLineInterface.OperationCompletedMessage();
                 }
             }
         }

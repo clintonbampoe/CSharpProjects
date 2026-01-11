@@ -8,9 +8,9 @@ class CommandLineInterface
 
     public static void SelectFieldsForEntry(SqliteConnection connection)
     {
-        Console.WriteLine("Pick Fields");
-        Console.WriteLine("\t 1 - Name & Date only");
-        Console.WriteLine("\t 2 - Name , Date and Occurances only");
+        Console.WriteLine("CHOOSE FIELDS TO INSERT");
+        Console.WriteLine("\t 1 - Name ,Date and Unit");
+        Console.WriteLine("\t 2 - All Fields");
         Console.WriteLine("Press 'q' to return...");
         Console.WriteLine("Enter");
 
@@ -26,6 +26,8 @@ class CommandLineInterface
             Console.Write(">>>");
             string input = Method.Input.Take();
 
+            if (input.ToLower().Equals("q"))
+                return;
 
             while (!(int.TryParse(input, out value)))
             {
@@ -44,11 +46,15 @@ class CommandLineInterface
             Console.Write(">>>");
             string name = Method.Input.Take();
 
+            Console.WriteLine("Enter unit: ");
+            Console.Write(">>>");
+            string unit = Method.Input.Take();
+
             DateTime date = PromptForDate();
             string sqliteDate = date.ToString("yyyy-MM-dd");
 
             // INSERT INTO DATABASE
-            Table.InsertRow.NameAndDateOnly(connection, name, sqliteDate);
+            Table.InsertRow.NameDateAndUnitOnly(connection, name, sqliteDate, unit);
         }
         else
         {
@@ -56,22 +62,27 @@ class CommandLineInterface
             Console.Write(">>>");
             string name = Method.Input.Take();
 
+            Console.WriteLine("Enter unit: ");
+            Console.Write(">>>");
+            string unit = Method.Input.Take();
+
             DateTime date = PromptForDate();
             string sqliteDate = date.ToString("yyyy-MM-dd");
 
-            Console.WriteLine("Occurances: ");
+            Console.WriteLine("Quantity: ");
             Console.Write(">>>");
-
-            string occurancesInput = Method.Input.Take();
-            int occurances;
-            while(!(int.TryParse(occurancesInput, out occurances)))
+            string quantityInput = Method.Input.Take();
+            int quantity;
+            while(!(int.TryParse(quantityInput, out quantity)))
             {
                 InvalidInputErrorMessage();
                 Console.Write(">>>");
             }
 
             // INSERT INTO DATABASE
-            Table.InsertRow.New(connection, name, sqliteDate, occurances);
+            Table.InsertRow.New(connection, name, sqliteDate, unit, quantity);
+            OperationCompletedMessage();
+
         }
     }
 

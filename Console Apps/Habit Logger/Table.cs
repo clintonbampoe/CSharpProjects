@@ -13,7 +13,8 @@ class Table
                 @"CREATE TABLE IF NOT EXISTS Habit (
                 Name TEXT NOT NULL,
                 Date TEXT NOT NULL,
-                Occurance INT DEFAULT 0,
+                Unit TEXT,
+                Quantity INT DEFAULT 0,
                 PRIMARY KEY (Name, Date)
                 );";
                 createHabitsTable.ExecuteNonQuery();
@@ -23,47 +24,70 @@ class Table
 
     public class InsertRow
     {
-        public static void New(SqliteConnection connection, string name, string date, int occurance)
+        public static void New(SqliteConnection connection, string name, string date, string unit, int quantity)
         {
             using (SqliteCommand InsertHabitCmd = connection.CreateCommand())
             {
-                InsertHabitCmd.CommandText = "INSERT OR IGNORE INTO Habit (Name, Date, Occurance) VALUES ($name, $date, $occurance)";
+                InsertHabitCmd.CommandText = "INSERT INTO Habit (Name, Date, Unit, Quantity) VALUES ($name, $date, $unit, $quantity)";
                 InsertHabitCmd.Parameters.AddWithValue("$name", name);
                 InsertHabitCmd.Parameters.AddWithValue("$date", date);
-                InsertHabitCmd.Parameters.AddWithValue("$occurance", occurance);
+                InsertHabitCmd.Parameters.AddWithValue("$unit", unit);
+                InsertHabitCmd.Parameters.AddWithValue("$quantity", quantity);
                 InsertHabitCmd.ExecuteNonQuery();
             }
         }
         
-        public static void NameAndDateOnly(SqliteConnection connection, string name, string date)
+        public static void NameDateAndUnitOnly(SqliteConnection connection, string name, string date, string unit)
         {
             using(SqliteCommand InsertHabitCmd = connection.CreateCommand())
             {
-                InsertHabitCmd.CommandText = "INSERT OR IGNORE INTO Habit (Name, Date) VALUES ($name, $date)";
+                InsertHabitCmd.CommandText = "INSERT INTO Habit (Name, Date, Unit) VALUES ($name, $date, $unit)";
                 InsertHabitCmd.Parameters.AddWithValue("$name", name);
                 InsertHabitCmd.Parameters.AddWithValue("$date", date);
+                InsertHabitCmd.Parameters.AddWithValue("$unit", unit);
                 InsertHabitCmd.ExecuteNonQuery();
             }
         }
     }
 
-    public class Update
+    public class UpdateRow
     {
-        public static void Row(SqliteConnection connection, int row, int occurance)
+        public static void Quantity(SqliteConnection connection, int row, int quantity)
         {
-            using(SqliteCommand updateRowCmd = connection.CreateCommand())
+            using(SqliteCommand updateQuantityField = connection.CreateCommand())
             {
-                updateRowCmd.CommandText =
-                @"UPDATE Habit SET Occurance = $updateOccurance WHERE rowid = (
+                updateQuantityField.CommandText =
+                @"UPDATE Habit SET Quantity = $updateQuantity WHERE rowid = (
                     SELECT rowid FROM Habit
                     ORDER BY Name, Date
                     LIMIT 1 OFFSET $rowMinusOne
                 );";
-                updateRowCmd.Parameters.AddWithValue("$updateOccurance", occurance);
-                updateRowCmd.Parameters.AddWithValue("$rowMinusOne", row-1);
-                int updated = updateRowCmd.ExecuteNonQuery();
+                updateQuantityField.Parameters.AddWithValue("$updateQuantity", quantity);
+                updateQuantityField.Parameters.AddWithValue("$rowMinusOne", row-1);
+                int updated = updateQuantityField.ExecuteNonQuery();
 
                 if(updated == 0)
+                {
+                    Method.Print.RedText("No row updated - offset out of range");
+                }
+            }
+        }
+
+        public static void Unit(SqliteConnection connection, int row, string unit)
+        {
+            using(SqliteCommand updateUnitField = connection.CreateCommand())
+            {
+                updateUnitField.CommandText =
+                @"UPDATE Habit SET Quantity = $updateUnit WHERE rowid = (
+                    SELECT rowid FROM Habit
+                    ORDER BY Name, Date
+                    LIMIT 1 OFFSET $rowMinusOne
+                );";
+                updateUnitField.Parameters.AddWithValue("$updateUnit", unit);
+                updateUnitField.Parameters.AddWithValue("$rowMinusOne", row - 1);
+                int updated = updateUnitField.ExecuteNonQuery();
+
+                if (updated == 0)
                 {
                     Method.Print.RedText("No row updated - offset out of range");
                 }
@@ -74,7 +98,7 @@ class Table
 
     public class Display
     {
-        public static void All(SqliteConnection connection)
+        public static void AllRows(SqliteConnection connection)
         {
             using (SqliteCommand selectCommand = connection.CreateCommand())
             {
@@ -82,11 +106,11 @@ class Table
 
                 using (SqliteDataReader reader = selectCommand.ExecuteReader())
                 {
-                    Method.Print.GreenText("HABITS");
+                    Console.WriteLine("HABIT TABLE");
 
-                    Method.Formatting.HorizontalLine(67);
-                    Console.WriteLine("| {0,5} | {1,-20} | {2,-20} | {3,9} |", "ENTRY", "NAME", "DATE", "OCCURANCE");
-                    Method.Formatting.HorizontalLine(67);
+                    Method.Formatting.HorizontalLine(89);
+                    Console.WriteLine("| {0,5} | {1,-20} | {2,-20} | {3,-20} | {4,8} |", "ENTRY", "NAME", "DATE", "UNIT", "QUANTITY");
+                    Method.Formatting.HorizontalLine(89);
 
                     int entryNo = 0;
                     while (reader.Read())
@@ -94,14 +118,30 @@ class Table
                         entryNo++;
                         string name = reader.GetString(0);
                         string date = reader.GetString(1);
-                        int occurance = reader.GetInt32(2);
+                        string unit = reader.GetString(2);
+                        int quantity = reader.GetInt32(3);
 
-                        Console.WriteLine("| {0, 5} | {1,-20} | {2,-20} | {3,9} |", entryNo, name, date, occurance);
-                        Method.Formatting.HorizontalLine(67);
+                        Console.WriteLine("| {0, 5} | {1,-20} | {2,-20} | {3,-20} | {4,8} |", entryNo, name, date, unit, quantity);
+                        Method.Formatting.HorizontalLine(89);
                     }
                 }
             }
            
+        }
+
+        public static void TableInfo(SqliteConnection connection)
+        {
+            using (SqliteCommand tableInfoCmd = connection.CreateCommand())
+            {
+                tableInfoCmd.CommandText = "PRAGMA table_info(Habit);";
+                using (SqliteDataReader reader = tableInfoCmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Console.WriteLine($"{reader["name"]} - {reader["type"]}");
+                    }
+                }
+            }
         }
     }
 
