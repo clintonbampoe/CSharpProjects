@@ -98,7 +98,6 @@ class Program
                         string userInput = Method.Input.Take();
 
                         Table.UpdateRow.Unit(connection, row, userInput);
-                        CommandLineInterface.OperationCompletedMessage();
                     }
                     else if (updateFieldInput.ToLower().Equals("q"))
                     {
@@ -110,7 +109,6 @@ class Program
                         int quantity = CommandLineInterface.ConvertStringToInt(userInput);
 
                         Table.UpdateRow.Quantity(connection, row, quantity);
-                        CommandLineInterface.OperationCompletedMessage();
                     }
                     else
                     {
@@ -127,7 +125,6 @@ class Program
                     if (CommandLineInterface.ConfirmCommand())
                     {
                         Table.Delete.Row(connection, row);
-                        CommandLineInterface.OperationCompletedMessage();
                     }
                     else
                         break;
@@ -144,7 +141,6 @@ class Program
                 else if(input.ToLower() == "t")
                 {
                     Table.Create.NewTable(connection);
-                    CommandLineInterface.OperationCompletedMessage();
                 }
                 
                 else if (input.ToLower() == "x")
@@ -153,7 +149,6 @@ class Program
                     if (CommandLineInterface.ConfirmCommand())
                     {
                         Table.Delete.Table(connection);
-                        CommandLineInterface.OperationCompletedMessage();
                     }
                     else
                         break;
