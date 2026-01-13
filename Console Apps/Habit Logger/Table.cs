@@ -1,5 +1,6 @@
 ﻿using HabitLogger;
 using Microsoft.Data.Sqlite;
+using Spectre.Console;
 class Table
 {
 
@@ -19,22 +20,14 @@ class Table
                 );";
                 
                 int created = createHabitsTable.ExecuteNonQuery();
-                if(created == 0)
-                {
-                    Method.Print.RedText("Table already exists");
-                    CommandLineInterface.WaitForKeyPress();
-                }
-                else
-                {
-                    CommandLineInterface.OperationCompletedMessage();
-                }
+                CommandLineInterface.OperationCompletedMessage();
             }
         }
     }
 
     public class InsertRow
     {
-        public static void New(SqliteConnection connection, string name, string date, string unit, int quantity)
+        public static void AllFields(SqliteConnection connection, string name, string date, string unit, int quantity)
         {
             using (SqliteCommand InsertHabitCmd = connection.CreateCommand())
             {
@@ -43,17 +36,23 @@ class Table
                 InsertHabitCmd.Parameters.AddWithValue("$date", date);
                 InsertHabitCmd.Parameters.AddWithValue("$unit", unit);
                 InsertHabitCmd.Parameters.AddWithValue("$quantity", quantity);
-                
-                int inserted = InsertHabitCmd.ExecuteNonQuery();
-                if(inserted == 0)
+                try
                 {
-                    CommandLineInterface.NoRowsAffectedErrorMessage("Record already exists");
-                    CommandLineInterface.WaitForKeyPress();
+                    int inserted = InsertHabitCmd.ExecuteNonQuery();
+                    if (inserted == 0)
+                    {
+                        CommandLineInterface.NoRowsAffectedErrorMessage("Record already exists");
+                        CommandLineInterface.WaitForKeyPress();
+                    }
+                }
+                catch (SqliteException ex)
+                {
+                    CommandLineInterface.TableDoesnotExistErrorMessage(ex);
                 }
             }
         }
         
-        public static void NameDateAndUnitOnly(SqliteConnection connection, string name, string date, string unit)
+        public static void NameDateAndUnitFields(SqliteConnection connection, string name, string date, string unit)
         {
             using(SqliteCommand InsertHabitCmd = connection.CreateCommand())
             {
@@ -61,12 +60,18 @@ class Table
                 InsertHabitCmd.Parameters.AddWithValue("$name", name);
                 InsertHabitCmd.Parameters.AddWithValue("$date", date);
                 InsertHabitCmd.Parameters.AddWithValue("$unit", unit);
-                
-                int inserted = InsertHabitCmd.ExecuteNonQuery();
-                if(inserted == 0)
+                try
                 {
-                    CommandLineInterface.NoRowsAffectedErrorMessage("Record already exists");
-                    CommandLineInterface.WaitForKeyPress();
+                    int inserted = InsertHabitCmd.ExecuteNonQuery();
+                    if(inserted == 0)
+                    {
+                        CommandLineInterface.NoRowsAffectedErrorMessage("Record already exists");
+                        CommandLineInterface.WaitForKeyPress();
+                    }
+                }
+                catch(SqliteException ex)
+                {
+                    CommandLineInterface.TableDoesnotExistErrorMessage(ex);
                 }
             }
         }
@@ -86,15 +91,19 @@ class Table
                 );";
                 updateQuantityField.Parameters.AddWithValue("$updateQuantity", quantity);
                 updateQuantityField.Parameters.AddWithValue("$rowMinusOne", row-1);
-                int updated = updateQuantityField.ExecuteNonQuery();
-
-                if(updated == 0)
+                try
                 {
-                    CommandLineInterface.NoRowsAffectedErrorMessage("Record does not exist");
-                    CommandLineInterface.WaitForKeyPress();
+                    int updated = updateQuantityField.ExecuteNonQuery();
+                    if (updated == 0)
+                    {
+                        CommandLineInterface.NoRowsAffectedErrorMessage("Record already exists");
+                        CommandLineInterface.WaitForKeyPress();
+                    }
                 }
-                else
-                    CommandLineInterface.OperationCompletedMessage();
+                catch (SqliteException ex)
+                {
+                    CommandLineInterface.TableDoesnotExistErrorMessage(ex);
+                }
             }
         }
 
@@ -110,15 +119,19 @@ class Table
                 );";
                 updateUnitField.Parameters.AddWithValue("$updateUnit", unit);
                 updateUnitField.Parameters.AddWithValue("$rowMinusOne", row - 1);
-                int updated = updateUnitField.ExecuteNonQuery();
-
-                if (updated == 0)
+                try
                 {
-                    CommandLineInterface.NoRowsAffectedErrorMessage("Record does not exist");
-                    CommandLineInterface.WaitForKeyPress();
+                    int updated = updateUnitField.ExecuteNonQuery();
+                    if (updated == 0)
+                    {
+                        CommandLineInterface.NoRowsAffectedErrorMessage("Record already exists");
+                        CommandLineInterface.WaitForKeyPress();
+                    }
                 }
-                else
-                    CommandLineInterface.OperationCompletedMessage();
+                catch (SqliteException ex)
+                {
+                    CommandLineInterface.TableDoesnotExistErrorMessage(ex);
+                }
             }
         }
     }
@@ -132,27 +145,36 @@ class Table
             {
                 selectCommand.CommandText = "SELECT * FROM Habit ORDER BY name, date";
 
-                using (SqliteDataReader reader = selectCommand.ExecuteReader())
+                try
                 {
-                    Console.WriteLine();
-                    Console.WriteLine("HABIT TABLE");
-
-                    Method.Formatting.HorizontalLine(89);
-                    Console.WriteLine("| {0,5} | {1,-20} | {2,-20} | {3,-20} | {4,8} |", "ENTRY", "NAME", "DATE", "UNIT", "QUANTITY");
-                    Method.Formatting.HorizontalLine(89);
-
-                    int entryNo = 0;
-                    while (reader.Read())
+                    using (SqliteDataReader reader = selectCommand.ExecuteReader())
                     {
-                        entryNo++;
-                        string name = reader.GetString(0);
-                        string date = reader.GetString(1);
-                        string unit = reader.GetString(2);
-                        int quantity = reader.GetInt32(3);
+                        Console.WriteLine();
+                        Console.WriteLine("HABIT TABLE");
 
-                        Console.WriteLine("| {0, 5} | {1,-20} | {2,-20} | {3,-20} | {4,8} |", entryNo, name, date, unit, quantity);
                         Method.Formatting.HorizontalLine(89);
+                        Console.WriteLine("| {0,5} | {1,-20} | {2,-20} | {3,-20} | {4,8} |", "ENTRY", "NAME", "DATE", "UNIT", "QUANTITY");
+                        Method.Formatting.HorizontalLine(89);
+
+                        int entryNo = 0;
+                        while (reader.Read())
+                        {
+                            entryNo++;
+                            string name = reader.GetString(0);
+                            string date = reader.GetString(1);
+                            string unit = reader.GetString(2);
+                            int quantity = reader.GetInt32(3);
+
+                            Console.WriteLine("| {0, 5} | {1,-20} | {2,-20} | {3,-20} | {4,8} |", entryNo, name, date, unit, quantity);
+                            Method.Formatting.HorizontalLine(89);
+                        }
+
+                        CommandLineInterface.WaitForKeyPress();
                     }
+                }
+                catch(SqliteException ex)
+                {
+                    CommandLineInterface.TableDoesnotExistErrorMessage(ex);
                 }
             }
            
@@ -171,6 +193,8 @@ class Table
                         Console.WriteLine($"{reader["name"]} - {reader["type"]}");
                     }
                 }
+
+                CommandLineInterface.WaitForKeyPress();
             }
         }
     }
@@ -188,10 +212,12 @@ class Table
                 if(deleteTable == 0)
                 {
                     CommandLineInterface.NoRowsAffectedErrorMessage("Table does not exist");
+                    CommandLineInterface.WaitForKeyPress();
                 }
                 else
                 {
                     CommandLineInterface.OperationCompletedMessage();
+                    CommandLineInterface.WaitForKeyPress();
                 }
                 
             }
@@ -218,6 +244,7 @@ class Table
                 else
                 {
                     CommandLineInterface.OperationCompletedMessage();
+                    CommandLineInterface.WaitForKeyPress();
                 }
             }
         }
