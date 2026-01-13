@@ -1,5 +1,5 @@
 ﻿using Spectre.Console;
-using HabitLogger;
+namespace HabitLogger;
 using Microsoft.Data.Sqlite;
 
 public class Menu

@@ -207,19 +207,10 @@ class Table
             using(SqliteCommand deleteTableCmd = connection.CreateCommand())
             {
                 deleteTableCmd.CommandText = "DROP TABLE IF EXISTS Habit";
-                
                 int deleteTable = deleteTableCmd.ExecuteNonQuery();
-                if(deleteTable == 0)
-                {
-                    CommandLineInterface.NoRowsAffectedErrorMessage("Table does not exist");
-                    CommandLineInterface.WaitForKeyPress();
-                }
-                else
-                {
-                    CommandLineInterface.OperationCompletedMessage();
-                    CommandLineInterface.WaitForKeyPress();
-                }
-                
+
+                CommandLineInterface.OperationCompletedMessage();
+                CommandLineInterface.WaitForKeyPress();
             }
         }
 

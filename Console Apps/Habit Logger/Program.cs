@@ -6,8 +6,30 @@ class Program
 {
     public static void Main(string[] args)
     {
+        // set app state
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
         string connectionString = "Data Source=Habits.db";
         SqliteConnection connection = new(connectionString);
+
+        AnsiConsole.MarkupLine("[bold yellow]LOADING HABIT LOGGER![/]");
+
+        AnsiConsole.Status()
+            .Spinner(Spinner.Known.Arc)
+            .Start("Connecting to database...", ctx =>
+            {
+                // Simulate some work
+                Thread.Sleep(1000);
+
+                ctx.Status("Loading app assets...");
+                Thread.Sleep(2000);
+
+                ctx.Status("Allocating system resources!");
+                Thread.Sleep(1000);
+            });
+
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("[bold green]READY![/]");
+        CommandLineInterface.WaitForKeyPress();
 
         using (connection)
         {
