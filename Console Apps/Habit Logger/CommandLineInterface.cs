@@ -1,9 +1,9 @@
 ﻿using HabitLogger;
 using Microsoft.Data.Sqlite;
-using SQLitePCL;
+using Spectre.Console;
 using System.Globalization;
 
-class CommandLineInterface 
+static class CommandLineInterface 
 { 
 
     public static void SelectFieldsForEntry(SqliteConnection connection)
@@ -54,7 +54,7 @@ class CommandLineInterface
             string sqliteDate = date.ToString("yyyy-MM-dd");
 
             // INSERT INTO DATABASE
-            Table.InsertRow.NameDateAndUnitOnly(connection, name, sqliteDate, unit);
+            Table.InsertRow.NameDateAndUnitFields(connection, name, sqliteDate, unit);
         }
         else
         {
@@ -80,7 +80,7 @@ class CommandLineInterface
             }
 
             // INSERT INTO DATABASE
-            Table.InsertRow.New(connection, name, sqliteDate, unit, quantity);
+            Table.InsertRow.AllFields(connection, name, sqliteDate, unit, quantity);
             OperationCompletedMessage();
 
         }
@@ -138,12 +138,12 @@ class CommandLineInterface
     public static int ConvertStringToInt(string str)
     {
         int number;
-        bool validInput = int.TryParse(str, out number);
 
-        while (!validInput)
+        while (!int.TryParse(str, out number))
         {
             InvalidInputErrorMessage();
             Console.Write(">>>");
+            str = Method.Input.Take();
         }
 
         return number;
@@ -151,12 +151,16 @@ class CommandLineInterface
 
     public static bool ConfirmCommand()
     {
-        Method.Print.RedText("Are you sure you to continue...");
-        Console.WriteLine("Enter 'y' for YES and any other key for NO");
-        Console.Write(">>>");
-        string input = Method.Input.Take();
+        string input = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("[bold yellow]ARE YOU SURE?[/]")
+                .AddChoices(
+                    "YES",
+                    "NO",
+                    "< BACK"
+                ));
 
-        if (input.Contains("y") || input.Contains("Y"))
+        if (input == "YES")
             return true;
         else
             return false;
@@ -172,7 +176,8 @@ class CommandLineInterface
 
     public static void WaitForKeyPress()
     {
-        Console.WriteLine("Press any key to continue...");
+        Console.WriteLine("\n\n");
+        AnsiConsole.Markup("[grey](Press any key to continue...[/])");
         Console.ReadKey(true);
     }
 
@@ -182,5 +187,59 @@ class CommandLineInterface
         Method.Formatting.HorizontalLine(20);
         Method.Print.RedText("ERROR");
         Method.Print.RedText($"0 rows affected! - {errorDetail}");
+    }
+
+    public static void InsertDataIntoHabitDateAndUnitFields(SqliteConnection connection)
+    {
+        // insert habit, date and unit only
+        Console.WriteLine("Enter Habit: ");
+        Console.Write(">>>");
+        string name = Method.Input.Take();
+
+        Console.WriteLine("Enter unit: ");
+        Console.Write(">>>");
+        string unit = Method.Input.Take();
+
+        DateTime date = CommandLineInterface.PromptForDate();
+        string sqliteDate = date.ToString("yyyy-MM-dd");
+
+        // INSERT INTO DATABASE
+        Table.InsertRow.NameDateAndUnitFields(connection, name, sqliteDate, unit);
+    }
+
+    public static void InsertDataIntoAllFields(SqliteConnection connection)
+    {
+        // insert all fields
+        Console.WriteLine("Enter Habit: ");
+        Console.Write(">>>");
+        string name = Method.Input.Take();
+
+        Console.WriteLine("Enter unit: ");
+        Console.Write(">>>");
+        string unit = Method.Input.Take();
+
+        DateTime date = CommandLineInterface.PromptForDate();
+        string sqliteDate = date.ToString("yyyy-MM-dd");
+
+        Console.WriteLine("Quantity: ");
+        Console.Write(">>>");
+        string quantityInput = Method.Input.Take();
+        int quantity;
+        while (!(int.TryParse(quantityInput, out quantity)))
+        {
+            CommandLineInterface.InvalidInputErrorMessage();
+            Console.Write(">>>");
+        }
+
+        // INSERT INTO DATABASE
+        Table.InsertRow.AllFields(connection, name, sqliteDate, unit, quantity);
+        CommandLineInterface.OperationCompletedMessage();
+    }
+
+    public static void TableDoesnotExistErrorMessage(SqliteException exception)
+    {
+        Console.WriteLine(exception.Message);
+        AnsiConsole.MarkupLine("Create a [bold yellow]NEW TABLE[/] first!");
+        WaitForKeyPress();
     }
 }
