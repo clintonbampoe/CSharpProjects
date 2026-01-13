@@ -52,13 +52,14 @@ public class Menu
 
         if (input == "HABIT, DATE AND UNIT ONLY")
         {
-            // insert habit, date and unit only
-           
+            // Insert
+            CommandLineInterface.InsertDataIntoHabitDateAndUnitFields(connection);
+
         }
         else if (input == "ALL FIELDS")
         {
-            // insert all fields
-            
+            CommandLineInterface.InsertDataIntoAllFields(connection);
+
         }
     }
 
@@ -104,20 +105,14 @@ public class Menu
     public static void DeleteRow(SqliteConnection connection)
     {
         // prompt for row number
+        int row = CommandLineInterface.EnterRowTo("Delete");
 
+        bool confirm = CommandLineInterface.ConfirmCommand();
 
-        string input = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title("[bold yellow]ARE YOU SURE?[/]")
-                .AddChoices(
-                    "[red]YES[/]",
-                    "[green]NO[/]",
-                    "< BACK"
-                ));
-
-        if (input == "[red]YES[/]")
+        if (confirm)
         {
             // delete row
+            Table.Delete.Row(connection, row);
         }
         else
             return;
@@ -160,24 +155,21 @@ public class Menu
 
     public static void NewTable(SqliteConnection connection)
     {
-
+        Table.Create.NewTable(connection);
     }
 
     public static void DeleteTable(SqliteConnection connection)
     {
-        string input = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title("[bold yellow]ARE YOU SURE?[/]")
-                .AddChoices(
-                    "[red]YES[/]",
-                    "[green]NO[/]",
-                    "< BACK"
-                ));
+        bool confirm = CommandLineInterface.ConfirmCommand();
+        if (confirm)
+            Table.Delete.Table(connection);
+        else
+            return;
     }
 
     public static void TableInfo(SqliteConnection connection)
     {
-
+        Table.Display.TableInfo(connection);
     }
 }
 
