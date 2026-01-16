@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 class UserInterface
 {
-    private booksController booksController = new();
+    private BooksController booksController = new();
     internal void MainMenu()
     {
         while (true)
