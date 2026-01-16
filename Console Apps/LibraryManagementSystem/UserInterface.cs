@@ -1,4 +1,4 @@
-﻿using LibraryManagementSystem;
+﻿using LibraryManagementSystem.Controllers;
 using Spectre.Console;
 using System.Runtime.CompilerServices;
 
@@ -19,16 +19,16 @@ class UserInterface
             switch (choice)
             {
                 case Enums.MenuOption.ViewBooks:
-                    booksController.ViewBooks();
+                    booksController.ViewItems();
                     break;
 
                 case Enums.MenuOption.AddBook:
 
-                    booksController.AddBooks();
+                    booksController.AddItem();
                     break;
 
                 case Enums.MenuOption.DeleteBook:
-                    booksController.DeleteBooks();
+                    booksController.DeleteItem();
                     break;
             }
         }

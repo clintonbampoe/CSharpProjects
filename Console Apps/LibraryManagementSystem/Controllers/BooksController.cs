@@ -1,10 +1,10 @@
 ﻿using Spectre.Console;
-namespace LibraryManagementSystem;
+namespace LibraryManagementSystem.Controllers;
 
-internal  class BooksController
+internal  class BooksController :IBaseController
 {
 
-    internal void ViewBooks()
+    public void ViewItems()
     {
         Table table = new();
         table.Border(TableBorder.Rounded);
@@ -35,7 +35,7 @@ internal  class BooksController
 
     }
 
-    internal void AddBooks()
+    public void AddItem()
     {
         var title = AnsiConsole.Ask<string>("Enter the [green]title[/] of the book to add:");
         var author = AnsiConsole.Ask<string>("Enter the [green]author[/] of the book:");
@@ -58,7 +58,7 @@ internal  class BooksController
         Console.ReadKey(true);
     }
 
-    internal void DeleteBooks()
+    public void DeleteItem()
     {
         IEnumerable<Book> books = MockDatabase.LibraryItems.OfType<Book>();
 
