@@ -1,9 +1,11 @@
 ﻿using LibraryManagementSystem;
 using Spectre.Console;
+using System.Runtime.CompilerServices;
 
 class UserInterface
 {
-    internal static void MainMenu()
+    private booksController booksController = new();
+    internal void MainMenu()
     {
         while (true)
         {
@@ -17,16 +19,16 @@ class UserInterface
             switch (choice)
             {
                 case Enums.MenuOption.ViewBooks:
-                    BooksController.ViewBooks();
+                    booksController.ViewBooks();
                     break;
 
                 case Enums.MenuOption.AddBook:
 
-                    BooksController.AddBooks();
+                    booksController.AddBooks();
                     break;
 
                 case Enums.MenuOption.DeleteBook:
-                    BooksController.DeleteBooks();
+                    booksController.DeleteBooks();
                     break;
             }
         }
