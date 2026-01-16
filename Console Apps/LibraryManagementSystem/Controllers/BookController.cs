@@ -1,7 +1,7 @@
 ﻿using Spectre.Console;
 namespace LibraryManagementSystem.Controllers;
 
-internal  class BookController :IBaseController
+internal  class BookController : BaseController, IBaseController
 {
 
     public void ViewItems()
@@ -45,46 +45,53 @@ internal  class BookController :IBaseController
 
         if (MockDatabase.LibraryItems.OfType<Book>().Any(b => b.Name.Equals(title, StringComparison.OrdinalIgnoreCase)))
         {
-            AnsiConsole.MarkupLine("[red]This book already exists.[/]");
+            DisplayMessage("Book already exists!", "red");
         }
         else
         {
-            Book newBook = new(MockDatabase.LibraryItems.Count + 1, title, author, category, location, pages);
+            var newBook = new Book(MockDatabase.LibraryItems.Count + 1, title, author, category, location, pages);
             MockDatabase.LibraryItems.Add(newBook);
-            AnsiConsole.MarkupLine("[green]Book added successfully![/]");
+            DisplayMessage("Book added successfully!", "green");
         }
 
-        AnsiConsole.MarkupLine("Press Any Key to Continue.");
-        Console.ReadKey(true);
+        DisplayMessage("Press Any Key to Continue.");
+        Console.ReadKey();
     }
 
     public void DeleteItem()
     {
-        IEnumerable<Book> books = MockDatabase.LibraryItems.OfType<Book>();
+        var books = MockDatabase.LibraryItems.OfType<Book>().ToList();
 
-        if (!books.Any())
+        if (books.Count == 0)
         {
             AnsiConsole.MarkupLine("[red]No books available to delete.[/]");
-            Console.ReadKey(true);
+            Console.ReadKey();
             return;
         }
 
-        LibraryItem bookToDelete = AnsiConsole.Prompt(
-            new SelectionPrompt<LibraryItem>()
-            .Title("Select a [red]book[/] to delete:")
-            .UseConverter(b => b.Name)
-            .AddChoices(books));
+        var bookToDelete = AnsiConsole.Prompt(
+            new SelectionPrompt<Book>()
+                .Title("Select a [red]book[/] to delete:")
+                .UseConverter(b => $"{b.Name} by {b.Author}")
+                .AddChoices(books));
 
-        if (MockDatabase.LibraryItems.Remove(bookToDelete))
+        if (ConfirmDeletion(bookToDelete.Name))
         {
-            AnsiConsole.MarkupLine("[red]Book deleted successfully![/]");
+            if (MockDatabase.LibraryItems.Remove(bookToDelete))
+            {
+                DisplayMessage("Book deleted successfully!", "red");
+            }
+            else
+            {
+                DisplayMessage("Book not found.", "red");
+            }
         }
         else
         {
-            AnsiConsole.MarkupLine("[red]Book not found.[/]");
+            DisplayMessage("Deletion canceled.", "yellow");
         }
 
-        AnsiConsole.MarkupLine("Press Any Key to Continue.");
-        Console.ReadKey(true);
+        DisplayMessage("Press Any Key to Continue.", "green");
+        Console.ReadKey();
     }
 }

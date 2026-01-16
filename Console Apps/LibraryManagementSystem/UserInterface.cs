@@ -14,12 +14,12 @@ internal class UserInterface
         {
             Console.Clear();
 
-            var actionChoice = AnsiConsole.Prompt(
+            MenuAction actionChoice = AnsiConsole.Prompt(
                 new SelectionPrompt<MenuAction>()
                 .Title("What do you want to do next?")
                 .AddChoices(Enum.GetValues<MenuAction>()));
 
-            var itemTypeChoice = AnsiConsole.Prompt(
+            ItemType itemTypeChoice = AnsiConsole.Prompt(
                 new SelectionPrompt<ItemType>()
                 .Title("Select the type of item:")
                 .AddChoices(Enum.GetValues<ItemType>()));
