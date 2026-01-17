@@ -20,6 +20,7 @@ Habit Logger is a C# console application built as a hobby project.
 - Clone or download project files
 - Open solution in prefered C# editor
 - Ensure `Microsoft.Data.Sqlite` package is installed 
+- Ensure `Spectre.Console` package is installed
 
 ## USAGE
 - Run the app and see 😫.
@@ -38,7 +39,7 @@ CREATE TABLE IF NOT EXISTS Habit (
 
 ## Learning Goals
 This project demonstrates:
-- How to connect a C# application to a SQLite database.
+- How to connect a C# application to a SQLite database using ADO.NET.
 - How to execute SQL commands from C#.
 - How to design and implement CRUD functionality in a console application.
 - How to structure code for clarity and maintainability.
