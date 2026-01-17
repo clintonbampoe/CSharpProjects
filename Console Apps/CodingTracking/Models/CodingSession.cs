@@ -1,4 +1,5 @@
-﻿class CodingSession
+﻿namespace CodingTracker.Models;
+class CodingSession
 {
     public int SessionId { get; private set; }
     public DateTime StartTime { get; private set; }
