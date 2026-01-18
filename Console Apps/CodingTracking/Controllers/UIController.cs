@@ -1,6 +1,6 @@
 ﻿namespace CodingTracker.Controllers;
 
-class MenuController
+class UIController
 {
 
 }
