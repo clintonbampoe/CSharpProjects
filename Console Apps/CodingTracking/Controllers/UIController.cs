@@ -5,11 +5,7 @@ using CodingTracker.Views;
 using static CodingTracker.Models.Enums;
 class UIController
 {
-    private UserInterface userInterface;
-    public UIController(UserInterface ui)
-    {
-        userInterface = ui;
-    }
+    private UserInterface userInterface = new();
 
     public (MenuOption, CodingSession?) Execute()
     {

@@ -6,7 +6,12 @@ class CodingSession
     public DateTime EndTime { get; private set; }
     public TimeSpan Duration { get; private set; }
 
-    public CodingSession( DateTime startTime, DateTime endTime)
+    public CodingSession(int id)
+    {
+        Id = id;
+    }
+
+    public CodingSession(DateTime startTime, DateTime endTime)
     {
         StartTime = startTime;
         EndTime = endTime;
