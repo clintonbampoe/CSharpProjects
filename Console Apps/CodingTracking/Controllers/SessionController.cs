@@ -8,10 +8,12 @@ namespace CodingTracker.Controllers;
 class SessionController
 {
     private readonly Database _database;
-    public event EventHandler<string>? DatabaseOperationCompletedSuccessfully;
-    public SessionController(Database database)
+    public event EventHandler<string>? DatabaseOperationCompleted;
+    public event EventHandler<IEnumerable<CodingSession>> FetchedAllSessions;
+    public SessionController(Database database, EventHandler<IEnumerable<CodingSession>> fetchedAllSessionsHandler)
     {
         _database = database;
+        FetchedAllSessions = fetchedAllSessionsHandler;
     }
 
     public void Execute(MenuOption choice, CodingSession session)
@@ -19,43 +21,54 @@ class SessionController
         switch (choice)
         {
             case MenuOption.AddSession:
-                _database.AddSession(session);
+                AddSession(session);
                 break;
+
             case MenuOption.EditSession:
-                _database.EditSession(session);
+                EditSession(session);
                 break;
+
             case MenuOption.DeleteSession:
-                _database.DeleteSession(session);
+                DeleteSession(session);
                 break;
             case MenuOption.ViewAllSessions:
-                _database.GetAllSessions();
-                break;
-            default:
+                GetAllSessions();
                 break;
         }
     }
-    void AddSession(CodingSession session)
+
+
+    private void AddSession(CodingSession session)
     {
         _database.AddSession(session);
+        OnOperationCompleted("Inserted");
     }
 
-    void EditSession()
+    private void EditSession(CodingSession session)
     {
-
+        _database.EditSession(session);
+        OnOperationCompleted("Edited");
     }
 
-    void DeleteSession()
+    private void DeleteSession(CodingSession session)
     {
-
+        _database.EditSession(session);
+        OnOperationCompleted("Deleted");
     }
 
-    void GetAllSessions()
+    private void GetAllSessions()
     {
-
+        IEnumerable<CodingSession> allSessions = _database.GetAllSessions();
+        OnFetchedAllSessions(allSessions);
     }
 
-    void OnDatabaseOperationCompleted(string message)
+    // event broadcasters
+    private void OnOperationCompleted(string message)
     {
-        DatabaseOperationCompletedSuccessfully?.Invoke(this, message);
+        DatabaseOperationCompleted?.Invoke(this, message);
+    }
+    private void OnFetchedAllSessions(IEnumerable<CodingSession> allSessions)
+    {
+        FetchedAllSessions?.Invoke(this, allSessions);
     }
 }
