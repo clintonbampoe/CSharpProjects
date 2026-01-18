@@ -6,20 +6,20 @@ using Spectre.Console;
 
 class UserInterface
 {
-    void MainMenu()
+    public Enums.MenuOption MainMenu()
     {
         Console.Clear();
-
         AnsiConsole.MarkupLine("[bold yellow]MAIN MENU[/]");
 
         Enums.MenuOption choice = AnsiConsole.Prompt(
             new SelectionPrompt<Enums.MenuOption>()
             .Title("What do you want to do today")
             .AddChoices(Enum.GetValues<Enums.MenuOption>()));
-        
+
+        return choice;
     }
 
-    CodingSession AddSessionMenu()
+    public CodingSession AddSessionMenu()
     {
         Console.Clear();
         AnsiConsole.MarkupLine("[bold]Add a New Session[/]");
@@ -30,7 +30,7 @@ class UserInterface
         return new CodingSession(startTime, endTime);
     }
 
-    CodingSession EditSession()
+    public CodingSession EditSession()
     {
         Console.Clear();
         AnsiConsole.MarkupLine("[bold]Edit Session[/]");
@@ -42,7 +42,7 @@ class UserInterface
         return new CodingSession(sessionId, startTime, endTime);
     }
 
-    int DeleteSession()
+    public int DeleteSession()
     {
         Console.Clear();
         AnsiConsole.MarkupLine("[bold]Delete Session[/]");
@@ -50,5 +50,9 @@ class UserInterface
         return AnsiConsole.Ask<int>("Enter the [blue]Id[/] of the session you want to delete: ");
     }
 
+    public void ViewAllSessions()
+    {
+
+    }
 
 }
