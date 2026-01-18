@@ -50,9 +50,24 @@ class UserInterface
         return AnsiConsole.Ask<int>("Enter the [blue]Id[/] of the session you want to delete: ");
     }
 
-    public void ViewAllSessions()
+    public void ViewAllSessions(IEnumerable<CodingSession> allSessions)
     {
+        var table = new Table()
+            .AddColumn("Id")
+            .AddColumn("Start Time")
+            .AddColumn("End Time")
+            .AddColumn("Duration");
 
+        foreach(CodingSession session in allSessions)
+        {
+            table.AddRow(
+                session.Id.ToString(),
+                session.StartTime.ToString(),
+                session.EndTime.ToString(),
+                session.Duration.ToString());
+        }
+
+        AnsiConsole.Write(table);
     }
 
 }
