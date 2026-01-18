@@ -41,7 +41,7 @@ class Database
         }
     }
 
-    internal void EditSession(CodingSession session, int id)
+    internal void EditSession(CodingSession session)
     {
         using(SqliteConnection connection = new(_connectionString))
         {
