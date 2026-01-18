@@ -18,4 +18,37 @@ class UserInterface
             .AddChoices(Enum.GetValues<Enums.MenuOption>()));
         
     }
+
+    CodingSession AddSessionMenu()
+    {
+        Console.Clear();
+        AnsiConsole.MarkupLine("[bold]Add a New Session[/]");
+
+        DateTime startTime = AnsiConsole.Ask<DateTime>("Enter the [bold blue]Start Time[/] of this session: ");
+        DateTime endTime = AnsiConsole.Ask<DateTime>("Enter the [bold blue]End Time[/] of this session: ");
+
+        return new CodingSession(startTime, endTime);
+    }
+
+    CodingSession EditSession()
+    {
+        Console.Clear();
+        AnsiConsole.MarkupLine("[bold]Edit Session[/]");
+
+        int sessionId = AnsiConsole.Ask<int>("Enter the [blue]Id[/] of the session you want to edit: ");
+        DateTime startTime = AnsiConsole.Ask<DateTime>("End the new [blue]Start Time[/] of the session: ");
+        DateTime endTime = AnsiConsole.Ask<DateTime>("Enter the new [blue]End Time[/] of this session: ");
+
+        return new CodingSession(sessionId, startTime, endTime);
+    }
+
+    int DeleteSession()
+    {
+        Console.Clear();
+        AnsiConsole.MarkupLine("[bold]Delete Session[/]");
+
+        return AnsiConsole.Ask<int>("Enter the [blue]Id[/] of the session you want to delete: ");
+    }
+
+
 }
