@@ -2,7 +2,7 @@
 
 class Enums
 {
-    internal enum MenuActions{
+    internal enum MenuOption{
         AddSession,
         EditSession,
         DeleteSession,

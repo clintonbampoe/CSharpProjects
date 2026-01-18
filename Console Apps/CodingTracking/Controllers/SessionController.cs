@@ -6,7 +6,7 @@ namespace CodingTracker.Controllers;
 
 class SessionController
 {
-    private Database _database;
+    private readonly Database _database;
 
     public SessionController(Database database)
     {
