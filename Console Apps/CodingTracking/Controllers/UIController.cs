@@ -1,6 +1,44 @@
 ﻿namespace CodingTracker.Controllers;
 
+using CodingTracker.Models;
+using CodingTracker.Views;
+using static CodingTracker.Models.Enums;
 class UIController
 {
+    private UserInterface userInterface;
+    public UIController(UserInterface ui)
+    {
+        userInterface = ui;
+    }
 
+    public (MenuOption, CodingSession?) Execute()
+    {
+        MenuOption choice = userInterface.MainMenu();
+        CodingSession session;
+        int sessionId;
+
+        switch (choice)
+        {
+
+            case MenuOption.AddSession:
+                session = userInterface.AddSessionMenu();
+                return (choice, session);
+
+            case MenuOption.EditSession:
+                session = userInterface.EditSession();
+                return (choice, session);
+
+            case MenuOption.DeleteSession:
+                sessionId = userInterface.DeleteSession();
+                session = new CodingSession(sessionId);
+                return (choice, session);
+
+            case MenuOption.ViewAllSessions:
+                userInterface.ViewAllSessions();
+                return (choice, null);
+
+            default:
+                return (choice, null);
+        }
+    }
 }
