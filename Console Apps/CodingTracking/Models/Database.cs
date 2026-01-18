@@ -59,7 +59,7 @@ class Database
         }
     }
 
-    internal void DeleteSession(int id)
+    internal void DeleteSession(CodingSession session)
     {
         using(SqliteConnection connection = new(_connectionString))
         {
@@ -69,9 +69,10 @@ class Database
             @"DELETE FROM Sessions
                 WHERE id = @Id;";
 
-            connection.Execute(sql, new {Id = id});
+            connection.Execute(sql, session);
         }
     }
+
     public IEnumerable<CodingSession> GetAllSessions()
     {
         using (SqliteConnection connection = new(_connectionString))
