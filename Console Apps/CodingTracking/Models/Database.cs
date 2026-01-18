@@ -55,6 +55,7 @@ class Database
                 WHERE id = @Id;";
 
             connection.Execute(sql, session);
+
         }
     }
 
@@ -65,7 +66,7 @@ class Database
             connection.Open();
 
             string sql =
-            @"DELETE Sessions
+            @"DELETE FROM Sessions
                 WHERE id = @Id;";
 
             connection.Execute(sql, new {Id = id});
@@ -77,7 +78,7 @@ class Database
         {
             connection.Open();
 
-            return connection.Query<CodingSession>("SELECT * FROM Session");
+            return connection.Query<CodingSession>("SELECT * FROM Sessions");
         }
     }
 
