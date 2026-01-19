@@ -1,12 +1,12 @@
 ﻿namespace CodingTracker.Models;
 class CodingSession
 {
-    public int Id { get; private set; }
-    public DateTime StartTime { get; private set; }
-    public DateTime EndTime { get; private set; }
-    public TimeSpan Duration { get; private set; }
+    public long Id { get; }
+    public DateTime StartTime { get; }
+    public DateTime EndTime { get; }
+    public TimeSpan Duration { get; }
 
-    public CodingSession(int id)
+    public CodingSession(long id)
     {
         Id = id;
     }
@@ -18,11 +18,19 @@ class CodingSession
         Duration = EndTime - StartTime;
     }
 
-    public CodingSession(int id, DateTime startTime, DateTime endTime)
+    public CodingSession(long id, DateTime startTime, DateTime endTime)
     {
         Id = id;
         StartTime = startTime;
         EndTime = endTime;
         Duration = EndTime - StartTime;
+    }
+
+    public CodingSession(long id, DateTime startTime, DateTime endTime,  TimeSpan duration)
+    {
+        Id = id;
+        StartTime = startTime;
+        EndTime = endTime;
+        Duration = duration;
     }
 }
