@@ -57,6 +57,9 @@ class UserInterface
             .AddColumn("Start Time")
             .AddColumn("End Time")
             .AddColumn("Duration");
+        {
+            table.Border = TableBorder.Rounded;
+        }
 
         foreach(CodingSession session in allSessions)
         {
