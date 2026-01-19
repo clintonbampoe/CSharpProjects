@@ -10,10 +10,12 @@ class SessionController
     private readonly Database _database;
     public event EventHandler<string>? DatabaseOperationCompleted;
     public event EventHandler<IEnumerable<CodingSession>> FetchedAllSessions;
-    public SessionController(Database database, EventHandler<IEnumerable<CodingSession>> fetchedAllSessionsHandler)
+
+    public SessionController(Database database, EventHandler<IEnumerable<CodingSession>> fetchedAllSessionsHandler, EventHandler<string> dbOperationSuccessful)
     {
         _database = database;
-        FetchedAllSessions = fetchedAllSessionsHandler;
+        FetchedAllSessions += fetchedAllSessionsHandler;
+        DatabaseOperationCompleted += dbOperationSuccessful;
     }
 
     public void Execute(MenuOption choice, CodingSession session)
