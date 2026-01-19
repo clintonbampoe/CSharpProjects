@@ -19,7 +19,7 @@ class UserInterface
         return choice;
     }
 
-    public CodingSession AddSessionMenu()
+    public CodingSession AddSession()
     {
         Console.Clear();
         AnsiConsole.MarkupLine("[bold]Add a New Session[/]");
@@ -61,7 +61,7 @@ class UserInterface
             table.Border = TableBorder.Rounded;
         }
 
-        foreach(CodingSession session in allSessions)
+        foreach (CodingSession session in allSessions)
         {
             table.AddRow(
                 session.Id.ToString(),
@@ -88,5 +88,14 @@ class UserInterface
     {
         AnsiConsole.MarkupLine("[grey](Press any [blue]key[/] to Continue...)[/]");
         Console.ReadKey(true);
+    }
+
+    public void InvalidInput(string message)
+    {
+        Console.WriteLine();
+        AnsiConsole.MarkupLine("[bold red]Invalid Input![/]");
+        AnsiConsole.MarkupLine($"[red]Error:[/] {message}");
+        AnsiConsole.MarkupLine("[red]Try Again[/]");
+        WaitForKeyPress();
     }
 }
