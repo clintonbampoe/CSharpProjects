@@ -75,7 +75,8 @@ class UserInterface
 
     public void PrintOperationSuccessfulMessage(string message)
     {
-        AnsiConsole.MarkupLine("Operation completed successfully!");
+        Console.WriteLine();
+        AnsiConsole.MarkupLine("[green]Operation completed successfully![/]");
         AnsiConsole.MarkupLine($"[blue]{message}:[/] 1 row(s) affected");
         WaitForKeyPress();
     }
