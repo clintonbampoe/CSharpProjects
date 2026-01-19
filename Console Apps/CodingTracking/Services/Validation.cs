@@ -1,11 +1,13 @@
-﻿namespace CodingTracker.Services;
+﻿using CodingTracker.Models;
+
+namespace CodingTracker.Services;
 
 class Validation
 {
-    public static bool IsValidSessionDuration (DateTime start, DateTime end) => _isValidSessionDuration(start, end);
+    public static bool IsValidSession (CodingSession s) => _isValidSessionDuration(s);
 
-    private static bool _isValidSessionDuration(DateTime startTime, DateTime endTime)
+    private static bool _isValidSessionDuration(CodingSession session)
     {
-        return (endTime > startTime);
+        return (session.EndTime - session.StartTime).TotalSeconds > 0;
     }
 }
