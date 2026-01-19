@@ -68,6 +68,10 @@ class UserInterface
         }
 
         AnsiConsole.Write(table);
+        Console.WriteLine("\n");
+
+        AnsiConsole.MarkupLine("[grey](Press any [blue]key[/] to Continue...)[/]");
+        Console.ReadKey(true);
     }
 
     public void PrintOperationSuccessfulMessage(string message)
