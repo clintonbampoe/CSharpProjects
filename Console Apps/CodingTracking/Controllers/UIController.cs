@@ -3,6 +3,7 @@
 using CodingTracker.Models;
 using CodingTracker.Views;
 using static CodingTracker.Models.Enums;
+
 class UIController
 {
     private UserInterface userInterface = new();
@@ -30,11 +31,15 @@ class UIController
                 return (choice, session);
 
             case MenuOption.ViewAllSessions:
-                userInterface.ViewAllSessions();
                 return (choice, null);
 
             default:
                 return (choice, null);
         }
+    }
+
+    public void OnFetchedAllSessions(object sender, IEnumerable<CodingSession> allSessions)
+    {
+        userInterface.ViewAllSessions(allSessions);
     }
 }
