@@ -70,13 +70,19 @@ class UserInterface
         AnsiConsole.Write(table);
         Console.WriteLine("\n");
 
-        AnsiConsole.MarkupLine("[grey](Press any [blue]key[/] to Continue...)[/]");
-        Console.ReadKey(true);
+        WaitForKeyPress();
     }
 
     public void PrintOperationSuccessfulMessage(string message)
     {
         AnsiConsole.MarkupLine("Operation completed successfully!");
         AnsiConsole.MarkupLine($"[blue]{message}:[/] 1 row(s) affected");
+        WaitForKeyPress();
+    }
+
+    public void WaitForKeyPress()
+    {
+        AnsiConsole.MarkupLine("[grey](Press any [blue]key[/] to Continue...)[/]");
+        Console.ReadKey(true);
     }
 }
