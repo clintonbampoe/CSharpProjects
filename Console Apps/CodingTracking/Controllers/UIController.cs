@@ -2,6 +2,7 @@
 
 using CodingTracker.Models;
 using CodingTracker.Views;
+using System.Threading.Tasks.Dataflow;
 using static CodingTracker.Models.Enums;
 
 class UIController
@@ -41,5 +42,10 @@ class UIController
     public void OnFetchedAllSessions(object sender, IEnumerable<CodingSession> allSessions)
     {
         userInterface.ViewAllSessions(allSessions);
+    }
+
+    public void OnDatabaseOperationCompleted(object sender, string message)
+    {
+        userInterface.PrintOperationSuccessfulMessage(message);
     }
 }
