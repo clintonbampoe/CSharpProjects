@@ -9,6 +9,7 @@ class SessionController
 {
     private readonly Database _database;
     public event EventHandler<string>? DatabaseOperationCompleted;
+    public event EventHandler? DatabaseOperationFailed;
     public event EventHandler<IEnumerable<CodingSession>>? FetchedAllSessions;
 
     public SessionController(Database database)
@@ -46,14 +47,20 @@ class SessionController
 
     private void EditSession(CodingSession session)
     {
-        _database.EditSession(session);
-        OnOperationCompleted("Edited");
+        int success = _database.EditSession(session);
+        if (success != 0)
+            OnOperationCompleted("Edited");
+        else
+            OnOperationFailed();
     }
 
     private void DeleteSession(CodingSession session)
     {
-        _database.DeleteSession(session);
-        OnOperationCompleted("Deleted");
+        int success = _database.DeleteSession(session);
+        if (success != 0)
+            OnOperationCompleted("Deleted");
+        else
+            OnOperationFailed();
     }
 
     private void GetAllSessions()
@@ -70,5 +77,9 @@ class SessionController
     private void OnFetchedAllSessions(IEnumerable<CodingSession> allSessions)
     {
         FetchedAllSessions?.Invoke(this, allSessions);
+    }
+    private void OnOperationFailed()
+    {
+        DatabaseOperationFailed?.Invoke(this, EventArgs.Empty);
     }
 }

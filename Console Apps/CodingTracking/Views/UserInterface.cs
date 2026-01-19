@@ -65,8 +65,8 @@ class UserInterface
         {
             table.AddRow(
                 session.Id.ToString(),
-                session.StartTime.ToString(),
-                session.EndTime.ToString(),
+                session.StartTime.ToString("dddd, MMM d, yyyy h:mm tt"),
+                session.EndTime.ToString("dddd, MMM d, yyyy h:mm tt"),
                 session.Duration.ToString());
         }
 
@@ -81,6 +81,15 @@ class UserInterface
         Console.WriteLine();
         AnsiConsole.MarkupLine("[green]Operation completed successfully![/]");
         AnsiConsole.MarkupLine($"[blue]{message}:[/] 1 row(s) affected");
+        WaitForKeyPress();
+    }
+
+    public void PrintOperationFailedMessage()
+    {
+        Console.WriteLine();
+        AnsiConsole.MarkupLine("[red]Operation failed[/]");
+        AnsiConsole.MarkupLine("Target [yellow]row[/] does not exist!");
+        AnsiConsole.MarkupLine($"0 rows(s) affected!");
         WaitForKeyPress();
     }
 

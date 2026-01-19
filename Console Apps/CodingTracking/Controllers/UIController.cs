@@ -62,4 +62,9 @@ class UIController
     {
         userInterface.PrintOperationSuccessfulMessage(message);
     }
+
+    public void OnDatabaseOperationFailed(object sender, EventArgs args)
+    {
+        userInterface.PrintOperationFailedMessage();
+    }
 }

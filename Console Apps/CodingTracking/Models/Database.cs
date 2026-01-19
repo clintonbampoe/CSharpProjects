@@ -41,7 +41,7 @@ class Database
         }
     }
 
-    internal void EditSession(CodingSession session)
+    internal int EditSession(CodingSession session)
     {
         using(SqliteConnection connection = new(_connectionString))
         {
@@ -54,12 +54,12 @@ class Database
                     duration = @Duration
                 WHERE id = @Id;";
 
-            connection.Execute(sql, session);
+            return connection.Execute(sql, session);
 
         }
     }
 
-    internal void DeleteSession(CodingSession session)
+    internal int DeleteSession(CodingSession session)
     {
         using(SqliteConnection connection = new(_connectionString))
         {
@@ -69,7 +69,7 @@ class Database
             @"DELETE FROM Sessions
                 WHERE id = @Id;";
 
-            connection.Execute(sql, session);
+            return connection.Execute(sql, session);
         }
     }
 

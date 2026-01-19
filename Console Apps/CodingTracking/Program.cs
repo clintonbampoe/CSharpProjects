@@ -26,6 +26,7 @@ class Program
 
         sessionController.FetchedAllSessions += userInterface.OnFetchedAllSessions;
         sessionController.DatabaseOperationCompleted += userInterface.OnDatabaseOperationCompleted;
+        sessionController.DatabaseOperationFailed += userInterface.OnDatabaseOperationFailed;
 
         while (true)
         {
