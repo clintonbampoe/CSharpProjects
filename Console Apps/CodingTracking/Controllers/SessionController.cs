@@ -52,7 +52,7 @@ class SessionController
 
     private void DeleteSession(CodingSession session)
     {
-        _database.EditSession(session);
+        _database.DeleteSession(session);
         OnOperationCompleted("Deleted");
     }
 
