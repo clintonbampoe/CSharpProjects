@@ -70,4 +70,9 @@ class UserInterface
         AnsiConsole.Write(table);
     }
 
+    public void PrintOperationSuccessfulMessage(string message)
+    {
+        AnsiConsole.MarkupLine("Operation completed successfully!");
+        AnsiConsole.MarkupLine($"[blue]{message}:[/] 1 row(s) affected");
+    }
 }
