@@ -2,7 +2,7 @@
 
 using CodingTracker.Models;
 using CodingTracker.Views;
-using System.Threading.Tasks.Dataflow;
+using static CodingTracker.Services.Validation;
 using static CodingTracker.Models.Enums;
 
 class UIController
@@ -19,11 +19,25 @@ class UIController
         {
 
             case MenuOption.AddSession:
-                session = userInterface.AddSessionMenu();
+                do
+                {
+                    session = userInterface.AddSession();
+
+                    if (!IsValidSession(session))
+                        userInterface.InvalidInput("[blue]End Time[/] cannot be earlier than [blue]Start Time[/]");
+
+                } while (!IsValidSession(session));
                 return (choice, session);
 
             case MenuOption.EditSession:
-                session = userInterface.EditSession();
+                do
+                {
+                    session = userInterface.EditSession();
+
+                    if(!IsValidSession(session))
+                        userInterface.InvalidInput("[blue]End Time[/] cannot be earlier than [blue]Start Time[/]");
+
+                } while (!IsValidSession(session));
                 return (choice, session);
 
             case MenuOption.DeleteSession:
